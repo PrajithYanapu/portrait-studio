@@ -1,0 +1,135 @@
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 24px;
+    background: #10131a;
+    color: #f5f5f5;
+    font: 15px system-ui, sans-serif;
+}
+
+main {
+    max-width: 1200px;
+    margin: auto;
+}
+
+h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+h2 {
+    font-size: 21px;
+    margin-top: 0;
+}
+
+.meta {
+    color: #aeb8c9;
+    line-height: 1.6;
+}
+
+#refresh,
+.download-btn,
+.delete-btn {
+    display: inline-block;
+    padding: 10px 16px;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+#refresh {
+    background: #5267e8;
+    color: white;
+    margin: 12px 0;
+}
+
+#status {
+    margin: 12px 0;
+    color: #aeb8c9;
+}
+
+.card {
+    background: #1b2230;
+    border: 1px solid #343b4a;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 18px 0;
+}
+
+.photos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+}
+
+.photo-item {
+    margin: 0;
+    min-width: 0;
+}
+
+.photo-item figcaption {
+    margin-bottom: 10px;
+    color: #c5ccda;
+    font-weight: 600;
+}
+
+.photos img {
+    display: block;
+    width: 100%;
+    max-height: 380px;
+    object-fit: contain;
+    background: #080a0e;
+    border-radius: 8px;
+}
+
+.download-btn {
+    background: #247d55;
+    color: white;
+    margin-top: 12px;
+}
+
+.download-btn:hover {
+    background: #2d9967;
+}
+
+.card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.delete-btn {
+    background: #c43c4b;
+    color: white;
+}
+
+.delete-btn:hover {
+    background: #e34b5b;
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.empty-state {
+    color: #aeb8c9;
+    padding: 20px;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 14px;
+    }
+
+    .card {
+        padding: 14px;
+    }
+}

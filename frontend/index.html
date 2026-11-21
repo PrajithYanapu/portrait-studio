@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portrait Studio — Choose Your Portrait Style</title>
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:#0b0d12;color:#f4f6fb;font-family:Arial,sans-serif}
+.site-header{padding:34px 20px 22px;text-align:center;background:linear-gradient(135deg,#171b25,#241b3c)}
+.site-header h1{margin:0 0 10px;font-size:clamp(28px,4vw,42px)}
+.site-header p{max-width:760px;margin:0 auto;color:#c6cadd;line-height:1.6}
+.mode-switch{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;padding:22px 16px}
+.mode-button{border:1px solid #51466f;background:#1b202b;color:#eee;padding:13px 20px;border-radius:999px;font-weight:700;cursor:pointer}
+.mode-button.active{background:#8b5cf6;border-color:#8b5cf6;color:white}
+.mode-panel{display:none;max-width:1040px;margin:0 auto;padding:0 16px 36px}
+.mode-panel.active{display:block}
+.mode-panel .container{max-width:100%;margin:0 auto}
+.mode-panel .panel{background:#171b25;border:1px solid #292f3c;border-radius:14px;padding:22px;margin-bottom:20px}
+.mode-panel label{display:block;margin:16px 0 8px;font-weight:bold}
+.mode-panel input[type=file],.mode-panel input[type=text],.mode-panel select{width:100%;padding:12px;background:#0d1119;color:white;border:1px solid #343c4d;border-radius:8px}
+.mode-panel input[type=range]{width:100%}
+.mode-panel button{padding:13px 18px;margin:12px 6px 0 0;border:0;border-radius:8px;font-size:15px;font-weight:bold;cursor:pointer}
+.mode-panel button:disabled{opacity:.45;cursor:not-allowed}
+.mode-panel .primary{background:#8b5cf6;color:white}
+.mode-panel .secondary{background:#303949;color:white}
+.mode-panel .value{color:#b9a4ff}
+.mode-panel .status,.mode-panel .note{color:#bfc6d6;line-height:1.6}
+.mode-panel .note{font-size:13px}
+.mode-panel .check,.mode-panel .check-row{display:flex;gap:10px;align-items:center;margin-top:16px;line-height:1.5}
+.mode-panel .check label,.mode-panel .check-row label{margin:0;font-weight:normal}
+.mode-panel .preview{text-align:center}
+.mode-panel canvas{display:block;width:100%;max-width:760px;height:auto;margin:18px auto;background:white}
+.mode-panel .canvas-wrap{overflow:auto;background:#080a0e;border-radius:8px}
+.mode-panel .progress{height:7px;background:#303747;border-radius:20px;overflow:hidden;margin:14px 0}
+.mode-panel .bar{height:100%;width:0;background:#a78bfa}
+@media(max-width:600px){.site-header{padding:26px 14px}.mode-panel .panel{padding:15px}}
+</style>
+</head>
+<body>
+<header class="site-header">
+  <h1>✦ Portrait Studio ✦</h1>
+  <p>Turn your photograph into art. Choose a name-letter portrait made from your own name, or a high-detail animated character portrait.</p>
+</header>
+
+<nav class="mode-switch" aria-label="Choose portrait style">
+  <button class="mode-button active" type="button" data-target="name-mode">Name Letter Portrait</button>
+  <button class="mode-button" type="button" data-target="ascii-mode">Character Portrait</button>
+</nav>
+
+<main>
+  <section id="name-mode" class="mode-panel active" aria-label="Name Letter Portrait">
+
+
+<div class="container">
+
+    <h1>✦ Name Letter Portrait ✦</h1>
+
+    <p class="subtitle">
+        Turn your photograph into a portrait made from the letters
+        of your name.
+    </p>
+
+    <section class="panel">
+
+        <label for="personName">Enter your name</label>
+
+        <input
+            id="personName"
+            type="text"
+            placeholder="Example: PRAJITH"
+            value="PRAJITH"
+            maxlength="100"
+        >
+
+        <label for="photo">Upload your photograph</label>
+
+        <input
+            id="photo"
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+        >
+
+        <label for="detail">
+            Portrait detail:
+            <span class="value" id="detailValue">320 columns</span>
+        </label>
+
+        <input
+            id="detail"
+            type="range"
+            min="180"
+            max="420"
+            value="320"
+            step="20"
+        >
+
+        <label for="contrast">
+            Contrast:
+            <span class="value" id="contrastValue">1.8</span>
+        </label>
+
+        <input
+            id="contrast"
+            type="range"
+            min="0.7"
+            max="3.0"
+            value="1.8"
+            step="0.1"
+        >
+
+        <label for="fontSize">Letter size</label>
+
+        <select
+            id="fontSize"
+            style="width:100%;padding:12px;border-radius:8px;background:#111620;color:white;border:1px solid #424b5d;"
+        >
+            <option value="4" selected>Extra small — highest detail</option>
+            <option value="6">Small</option>
+            <option value="8">Medium</option>
+            <option value="10">Large</option>
+        </select>
+
+        <div class="check-row">
+            <input id="useFillers" type="checkbox" checked>
+            <label for="useFillers">
+                Use tiny filler characters for extra shading
+            </label>
+        </div>
+
+        <div class="check-row">
+            <input id="consent" type="checkbox">
+            <label for="consent">
+                I consent to generating my portrait and uploading the original and generated images to the studio server.
+            </label>
+        </div>
+
+        <p class="note">
+            Your portrait is generated in your browser. After generation, the original and generated images are uploaded to the studio server.
+        </p>
+
+        <button class="primary" id="generate">
+            Generate portrait
+        </button>
+
+        <button class="secondary" id="download" disabled>
+            Download PNG
+        </button>
+
+    </section>
+
+    <section class="panel preview">
+
+        <h2>Your text portrait</h2>
+
+        <p class="status" id="status">
+            Upload a clear photograph, enter your name, and generate
+            your portrait.
+        </p>
+
+        <canvas
+            id="result"
+            width="1800"
+            height="2200"
+            aria-label="Generated name letter portrait"
+        ></canvas>
+
+        <p class="note">
+            Tip: Use a clear, front-facing photograph with good lighting.
+            Zoom out to see the face and zoom in to see the individual
+            letters.
+        </p>
+
+    </section>
+
+</div>
+
+
+
+
+  </section>
+  <section id="ascii-mode" class="mode-panel" aria-label="Character Portrait">
+
+
+<div class="container">
+
+<h1>✦ High Detail ASCII Portrait ✦</h1>
+
+<p class="subtitle">
+Transform your photograph into a realistic character portrait
+with detailed facial shading and animated rendering.
+</p>
+
+<section class="panel">
+
+<label for="photo">Upload photograph</label>
+<input id="photo" type="file"
+       accept="image/jpeg,image/png,image/webp">
+
+<label for="asciiName">Enter your name</label>
+<input id="asciiName" type="text"
+       placeholder="Type your name (e.g. Prajith)"
+       maxlength="40"
+       autocomplete="name">
+
+<label for="detail">
+Portrait detail:
+<span class="value" id="detailValue">420 columns</span>
+</label>
+
+<input id="detail" type="range"
+       min="180" max="600" step="20" value="420">
+
+<label for="contrast">
+Contrast:
+<span class="value" id="contrastValue">1.7</span>
+</label>
+
+<input id="contrast" type="range"
+       min="0.8" max="2.8" step="0.1" value="1.7">
+
+<label for="fontSize">Character size</label>
+<select id="fontSize">
+    <option value="4">Extra small</option>
+    <option value="5" selected>Small — recommended</option>
+    <option value="6">Medium small</option>
+    <option value="8">Medium</option>
+</select>
+
+<label for="style">Character texture</label>
+<select id="style">
+    <option value="dense">Dense ASCII shading</option>
+    <option value="classic">Classic ASCII</option>
+    <option value="blocks">Block shading</option>
+</select>
+
+<label for="speed">Animation speed</label>
+<select id="speed">
+    <option value="1">Slow</option>
+    <option value="3" selected>Fast</option>
+    <option value="8">Very fast</option>
+</select>
+
+<div class="check">
+    <input id="scanlines" type="checkbox" checked>
+    <label for="scanlines">Fine horizontal scan-line texture</label>
+</div>
+
+<div class="check">
+    <input id="edge" type="checkbox" checked>
+    <label for="edge">Enhance facial edges and contrast</label>
+</div>
+
+<div class="check">
+    <input id="darkBg" type="checkbox">
+    <label for="darkBg">Dark background with light characters</label>
+</div>
+
+<div class="check">
+    <input id="consent" type="checkbox">
+    <label for="consent">
+        I consent to generating my portrait and uploading the original and generated images to the studio server.
+    </label>
+</div>
+
+<p class="note">
+Your portrait is generated in your browser. After generation, the original and generated images are uploaded to the studio server.
+Use a clear, well-lit photograph for the best results.
+</p>
+
+<button class="primary" id="generate">
+Generate Animated Portrait
+</button>
+
+<button class="secondary" id="download" disabled>
+Download PNG
+</button>
+
+<button class="secondary" id="stop" disabled>
+Stop Animation
+</button>
+
+</section>
+
+<section class="panel preview">
+
+<h2>Your Portrait</h2>
+
+<p class="status" id="status">
+Upload a photograph to begin.
+</p>
+
+<div class="progress">
+    <div class="bar" id="bar"></div>
+</div>
+
+<div class="canvas-wrap">
+    <canvas id="result" width="1800" height="2200"></canvas>
+</div>
+
+<p class="note">
+Use higher detail settings for finer character patterns.
+The animation draws the portrait row by row.
+</p>
+
+</section>
+</div>
+
+
+
+  </section>
+</main>
+
+<script>
+(() => {
+  const buttons = document.querySelectorAll(".mode-button");
+  const panels = document.querySelectorAll(".mode-panel");
+  buttons.forEach(button => {
+    button.addEventListener("click", () => {
+      buttons.forEach(item => item.classList.toggle("active", item === button));
+      panels.forEach(panel => panel.classList.toggle("active", panel.id === button.dataset.target));
+    });
+  });
+})();
+</script>
+
+<script src="config.js"></script>
+<script>
+window.PORTRAIT_API_BASE = window.PORTRAIT_CONFIG.API_BASE;
+
+window.uploadPortraitToBackend = async function ({
+    customerName, style, settings, originalFile, canvas, statusElement
+}) {
+    if (!originalFile) throw new Error("Original photo file is missing.");
+
+    const generatedBlob = await new Promise((resolve, reject) => {
+        canvas.toBlob(blob => blob ? resolve(blob) :
+            reject(new Error("Could not prepare generated PNG.")), "image/png");
+    });
+
+    const form = new FormData();
+    form.append("customer_name", customerName);
+    form.append("style", style);
+    form.append("settings_json", JSON.stringify(settings));
+    form.append("original_photo", originalFile, originalFile.name);
+    form.append("generated_portrait", generatedBlob, "generated-portrait.png");
+
+    statusElement.textContent = "Portrait generated. Uploading to server...";
+    let response;
+    try {
+        response = await fetch(window.PORTRAIT_API_BASE + "/api/portraits", {
+            method: "POST",
+            body: form
+        });
+    } catch (err) {
+        throw new Error("Cannot reach backend at " + window.PORTRAIT_API_BASE +
+            ". Start FastAPI on port 8000. " + err.message);
+    }
+
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        const detail = body.detail || body.message || ("HTTP " + response.status);
+        throw new Error(typeof detail === "string" ? detail : JSON.stringify(detail));
+    }
+    statusElement.textContent = "Portrait generated and saved successfully. Record ID: " +
+        (body.id || body.portrait_id || "saved");
+    return body;
+};
+</script>
+
+<script id="name-generator-script" type="text/plain">
+"use strict";
+
+const photoInput = document.getElementById("photo");
+const nameInput = document.getElementById("personName");
+const detailInput = document.getElementById("detail");
+const contrastInput = document.getElementById("contrast");
+const fontInput = document.getElementById("fontSize");
+const fillersInput = document.getElementById("useFillers");
+const consentInput = document.getElementById("consent");
+
+const canvas = document.getElementById("result");
+const ctx = canvas.getContext("2d", {
+    alpha: false
+});
+
+const generateButton = document.getElementById("generate");
+const downloadButton = document.getElementById("download");
+const statusText = document.getElementById("status");
+
+const OUTPUT_WIDTH = 1800;
+const OUTPUT_HEIGHT = 2200;
+
+// These characters are used only occasionally when the filler
+// option is enabled. The name's own letters remain dominant.
+const FILLER_CHARACTERS = "il.,:;";
+
+// Keep a reference to the currently selected image.
+let loadedImage = null;
+let originalPhotoFile = null;
+
+// A monotonically increasing number prevents older image
+// processing tasks from overwriting a newer result.
+let renderVersion = 0;
+
+function updateControls() {
+    document.getElementById("detailValue").textContent =
+        detailInput.value + " columns";
+
+    document.getElementById("contrastValue").textContent =
+        Number(contrastInput.value).toFixed(1);
+}
+
+detailInput.addEventListener("input", updateControls);
+contrastInput.addEventListener("input", updateControls);
+
+function normalizeName(value) {
+    // Use only letters and digits from the entered name.
+    // This avoids drawing spaces as repeated blank cells.
+    return Array.from(
+        value.normalize("NFKC")
+    ).filter(character => /[\p{L}\p{N}]/u.test(character))
+     .join("")
+     .toUpperCase();
+}
+
+function showMessage(message) {
+    statusText.textContent = message;
+}
+
+function clearCanvas() {
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+}
+
+clearCanvas();
+
+photoInput.addEventListener("change", async function () {
+    const file = photoInput.files && photoInput.files[0];
+
+    loadedImage = null;
+    originalPhotoFile = null;
+    downloadButton.disabled = true;
+    renderVersion++;
+
+    if (!file) {
+        showMessage("Choose a photograph to get started.");
+        return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+        photoInput.value = "";
+        showMessage("Please choose a valid image file.");
+        return;
+    }
+
+    // Reject unusually large files to limit browser memory use.
+    if (file.size > 10 * 1024 * 1024) {
+        photoInput.value = "";
+        showMessage("Please choose an image 10 MB or smaller.");
+        return;
+    }
+
+    try {
+        const objectURL = URL.createObjectURL(file);
+        const image = new Image();
+
+        image.onload = function () {
+            URL.revokeObjectURL(objectURL);
+
+            loadedImage = image;
+            originalPhotoFile = file;
+            showMessage(
+                "Photograph loaded. Accept the consent checkbox " +
+                "and click Generate portrait."
+            );
+        };
+
+        image.onerror = function () {
+            URL.revokeObjectURL(objectURL);
+            loadedImage = null;
+            showMessage(
+                "Could not read this image. Try another JPG or PNG."
+            );
+        };
+
+        image.src = objectURL;
+
+    } catch (error) {
+        showMessage("Unable to load this photograph.");
+    }
+});
+
+function getPhotoPixels(image) {
+    // Crop the image to a square without stretching the face.
+    // Fit a portrait crop to the output ratio so the face is not stretched.
+    const targetRatio = OUTPUT_WIDTH / OUTPUT_HEIGHT;
+    const sourceRatio = image.naturalWidth / image.naturalHeight;
+    let sourceX = 0, sourceY = 0;
+    let sourceW = image.naturalWidth, sourceH = image.naturalHeight;
+
+    if (sourceRatio > targetRatio) {
+        sourceW = image.naturalHeight * targetRatio;
+        sourceX = (image.naturalWidth - sourceW) / 2;
+    } else {
+        sourceH = image.naturalWidth / targetRatio;
+        sourceY = (image.naturalHeight - sourceH) / 2;
+    }
+
+    const sampleCanvas = document.createElement("canvas");
+    const sampleCtx = sampleCanvas.getContext("2d", {
+        willReadFrequently: true
+    });
+
+    sampleCanvas.width = OUTPUT_WIDTH;
+    sampleCanvas.height = OUTPUT_HEIGHT;
+
+    sampleCtx.fillStyle = "#ffffff";
+    sampleCtx.fillRect(0, 0, OUTPUT_WIDTH, OUTPUT_HEIGHT);
+
+    sampleCtx.drawImage(
+        image,
+        sourceX,
+        sourceY,
+        sourceW,
+        sourceH,
+        0,
+        0,
+        OUTPUT_WIDTH,
+        OUTPUT_HEIGHT
+    );
+
+    return sampleCtx.getImageData(
+        0,
+        0,
+        OUTPUT_WIDTH,
+        OUTPUT_HEIGHT
+    ).data;
+}
+
+function calculateBrightness(pixels, x, y) {
+    const index = (
+        Math.floor(y) * OUTPUT_WIDTH +
+        Math.floor(x)
+    ) * 4;
+
+    const red = pixels[index];
+    const green = pixels[index + 1];
+    const blue = pixels[index + 2];
+
+    // Perceived brightness.
+    return (
+        0.2126 * red +
+        0.7152 * green +
+        0.0722 * blue
+    );
+}
+
+function transformBrightness(brightness, contrast) {
+    // Center the brightness around 128 and increase contrast.
+    let value = (
+        (brightness - 128) * contrast
+    ) + 128;
+
+    value = Math.max(0, Math.min(255, value));
+
+    // Convert brightness into ink darkness.
+    return 1 - value / 255;
+}
+
+function drawPortrait() {
+    if (!loadedImage) {
+        showMessage("Please upload a photograph first.");
+        return;
+    }
+
+    const name = normalizeName(nameInput.value);
+
+    if (!name) {
+        showMessage("Please enter a name containing letters or digits.");
+        return;
+    }
+
+    if (!consentInput.checked) {
+        showMessage(
+            "Please confirm your consent before generating the portrait."
+        );
+        return;
+    }
+
+    const currentVersion = ++renderVersion;
+
+    generateButton.disabled = true;
+    downloadButton.disabled = true;
+
+    showMessage("Generating your high-resolution text portrait...");
+
+    // Allow the browser to update the status before rendering.
+    setTimeout(() => {
+        try {
+            if (currentVersion !== renderVersion) {
+                return;
+            }
+
+            const pixels = getPhotoPixels(loadedImage);
+
+            const columns = Number(detailInput.value);
+            const fontSize = Number(fontInput.value);
+            const contrast = Number(contrastInput.value);
+
+            // Calculate rows from the square output and font size.
+            // Slightly narrower horizontal spacing gives the face
+            // a more natural portrait-like proportion.
+            const cellWidth = OUTPUT_WIDTH / columns;
+            // Denser rows and smaller glyphs improve fine facial shading.
+            const cellHeight = Math.max(4, fontSize * 0.82);
+            const rows = Math.floor(OUTPUT_HEIGHT / cellHeight);
+            const actualCellHeight = OUTPUT_HEIGHT / rows;
+
+            clearCanvas();
+
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            let nameIndex = 0;
+            let renderedCharacters = 0;
+
+            // Drawing is based on the brightness of the real photo.
+            // Dark pixels receive dark, visible letters.
+            // Bright pixels receive lighter gray letters.
+            for (let row = 0; row < rows; row++) {
+                if (currentVersion !== renderVersion) {
+                    return;
+                }
+
+                const y = (
+                    row + 0.5
+                ) * actualCellHeight;
+
+                for (let column = 0; column < columns; column++) {
+                    const x = (
+                        column + 0.5
+                    ) * cellWidth;
+
+                    const brightness = calculateBrightness(
+                        pixels,
+                        x,
+                        y
+                    );
+
+                    const darkness = transformBrightness(
+                        brightness,
+                        contrast
+                    );
+
+                    // Keep letters visible even in bright areas.
+                    // This avoids producing a nearly blank portrait.
+                    const ink = Math.round(238 - Math.pow(darkness, 0.78) * 220);
+
+                    const shade = Math.max(
+                        18,
+                        Math.min(245, ink)
+                    );
+
+                    ctx.fillStyle =
+                        "rgb(" + shade + "," +
+                        shade + "," + shade + ")";
+
+                    let character;
+
+                    // The person's name supplies most characters.
+                    // Fillers are used sparingly and deterministically.
+                    const useFiller =
+                        fillersInput.checked &&
+                        ((row * columns + column) % 9 === 0);
+
+                    if (useFiller) {
+                        character = FILLER_CHARACTERS[
+                            Math.floor(
+                                darkness *
+                                (FILLER_CHARACTERS.length - 1)
+                            )
+                        ];
+                    } else {
+                        character = name[
+                            nameIndex % name.length
+                        ];
+
+                        nameIndex++;
+                    }
+
+                    // Subtle density modulation: darker regions use
+                    // slightly bolder characters for better definition.
+                    ctx.font = (
+                        (darkness > 0.42 ? "bold " : "") +
+                        Math.max(3, fontSize * (darkness > 0.55 ? 1.0 : 0.82)) + "px monospace"
+                    );
+
+                    ctx.fillText(
+                        character,
+                        x,
+                        y,
+                        cellWidth * 1.18
+                    );
+
+                    renderedCharacters++;
+                }
+            }
+
+            downloadButton.disabled = false;
+
+            showMessage("Portrait generated. Uploading to server...");
+            window.uploadPortraitToBackend({
+                customerName: nameInput.value.trim(),
+                style: "name-letter",
+                settings: {
+                    detail: Number(detailInput.value),
+                    contrast: Number(contrastInput.value),
+                    fontSize: Number(fontInput.value),
+                    useFillers: fillersInput.checked
+                },
+                originalFile: originalPhotoFile,
+                canvas,
+                statusElement: statusText
+            }).catch(error => {
+                console.error("Portrait upload failed:", error);
+                showMessage("Portrait generated, but saving failed: " + error.message);
+            });
+
+        } catch (error) {
+            console.error(error);
+
+            showMessage(
+                "Something went wrong while generating the portrait. " +
+                "Try a smaller image or lower detail setting."
+            );
+
+        } finally {
+            generateButton.disabled = false;
+        }
+    }, 30);
+}
+
+generateButton.addEventListener("click", drawPortrait);
+
+downloadButton.addEventListener("click", function () {
+    if (!loadedImage || downloadButton.disabled) {
+        return;
+    }
+
+    const link = document.createElement("a");
+
+    const name = normalizeName(nameInput.value) || "portrait";
+
+    link.download = name.toLowerCase() + "-text-portrait.png";
+    link.href = canvas.toDataURL("image/png");
+
+    link.click();
+});
+
+// Invalidate the existing result when the name changes.
+nameInput.addEventListener("input", function () {
+    renderVersion++;
+    downloadButton.disabled = true;
+    showMessage("Name changed. Generate the portrait again.");
+});
+
+// Any rendering setting change requires regeneration.
+[
+    detailInput,
+    contrastInput,
+    fontInput,
+    fillersInput
+].forEach(control => {
+    control.addEventListener("change", function () {
+        renderVersion++;
+        downloadButton.disabled = true;
+    });
+});
+
+updateControls();
+
+</script>
+<script id="ascii-generator-script" type="text/plain">
+"use strict";
+
+const $ = id => document.querySelector("#ascii-mode #" + id);
+
+const photoInput = $("photo");
+const nameInput = $("asciiName");
+const detailInput = $("detail");
+const contrastInput = $("contrast");
+const fontInput = $("fontSize");
+const styleInput = $("style");
+const speedInput = $("speed");
+const scanInput = $("scanlines");
+const edgeInput = $("edge");
+const darkInput = $("darkBg");
+const consentInput = $("consent");
+
+const canvas = $("result");
+const ctx = canvas.getContext("2d", { alpha: false });
+
+const status = $("status");
+const bar = $("bar");
+
+const generateButton = $("generate");
+const downloadButton = $("download");
+const stopButton = $("stop");
+
+const W = 1800;
+const H = 2200;
+
+const CHARACTER_SETS = {
+    dense: " .'`^\",:;Il!i><~+_-?][}{1)(|/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$",
+    classic: " .,:;!|+*#%@",
+    blocks: " ░▒▓█"
+};
+
+let photo = null;
+let originalPhotoFile = null;
+let animationFrame = null;
+let generationId = 0;
+let completed = false;
+let running = false;
+
+function updateLabels() {
+    $("detailValue").textContent =
+        detailInput.value + " columns";
+
+    $("contrastValue").textContent =
+        Number(contrastInput.value).toFixed(1);
+}
+
+detailInput.addEventListener("input", updateLabels);
+contrastInput.addEventListener("input", updateLabels);
+
+function message(text) {
+    status.textContent = text;
+}
+
+function clearCanvas() {
+    ctx.fillStyle = darkInput.checked ? "#080808" : "#ffffff";
+    ctx.fillRect(0, 0, W, H);
+}
+
+clearCanvas();
+
+function stopAnimation(invalidate = true) {
+    if (invalidate) generationId++;
+
+    if (animationFrame !== null) {
+        cancelAnimationFrame(animationFrame);
+    }
+
+    animationFrame = null;
+    running = false;
+
+    generateButton.disabled = false;
+    stopButton.disabled = true;
+}
+
+photoInput.addEventListener("change", () => {
+    stopAnimation();
+
+    photo = null;
+    originalPhotoFile = null;
+    completed = false;
+    downloadButton.disabled = true;
+    bar.style.width = "0%";
+
+    const file = photoInput.files?.[0];
+
+    if (!file) {
+        message("Choose a photograph to start.");
+        return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+        message("Please choose a valid image.");
+        return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+        message("Please choose an image 10 MB or smaller.");
+        return;
+    }
+
+    const url = URL.createObjectURL(file);
+    const image = new Image();
+
+    image.onload = () => {
+        URL.revokeObjectURL(url);
+        photo = image;
+        originalPhotoFile = file;
+        message("Photo loaded. Accept consent and generate.");
+    };
+
+    image.onerror = () => {
+        URL.revokeObjectURL(url);
+        message("Could not load the photo. Try a JPG or PNG.");
+    };
+
+    image.src = url;
+});
+
+function preparePhoto(image) {
+    const sampleCanvas = document.createElement("canvas");
+
+    sampleCanvas.width = W;
+    sampleCanvas.height = H;
+
+    const sampleCtx = sampleCanvas.getContext("2d", {
+        willReadFrequently: true
+    });
+
+    sampleCtx.fillStyle = "#ffffff";
+    sampleCtx.fillRect(0, 0, W, H);
+
+    // Crop to portrait dimensions without stretching.
+    const targetRatio = W / H;
+    const imageRatio = image.naturalWidth / image.naturalHeight;
+
+    let sx = 0;
+    let sy = 0;
+    let sw = image.naturalWidth;
+    let sh = image.naturalHeight;
+
+    if (imageRatio > targetRatio) {
+        sw = image.naturalHeight * targetRatio;
+        sx = (image.naturalWidth - sw) / 2;
+    } else {
+        sh = image.naturalWidth / targetRatio;
+        sy = (image.naturalHeight - sh) / 2;
+    }
+
+    sampleCtx.drawImage(
+        image,
+        sx, sy, sw, sh,
+        0, 0, W, H
+    );
+
+    return sampleCtx.getImageData(0, 0, W, H).data;
+}
+
+function luminanceAt(pixels, x, y) {
+    x = Math.max(0, Math.min(W - 1, Math.round(x)));
+    y = Math.max(0, Math.min(H - 1, Math.round(y)));
+
+    const i = (y * W + x) * 4;
+
+    return (
+        0.2126 * pixels[i] +
+        0.7152 * pixels[i + 1] +
+        0.0722 * pixels[i + 2]
+    );
+}
+
+function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+}
+
+function analyzePixel(pixels, x, y, contrast) {
+    // Average a small neighborhood without blurring the face excessively.
+    const center = luminanceAt(pixels, x, y);
+    const left = luminanceAt(pixels, x - 2, y);
+    const right = luminanceAt(pixels, x + 2, y);
+    const up = luminanceAt(pixels, x, y - 2);
+    const down = luminanceAt(pixels, x, y + 2);
+
+    let brightness = (
+        center * 4 + left + right + up + down
+    ) / 8;
+
+    // Edge strength helps preserve glasses, eyelids, lips and hair edges.
+    const edgeStrength = (
+        Math.abs(left - right) +
+        Math.abs(up - down)
+    ) / 2;
+
+    if (edgeInput.checked) {
+        const edgeBoost = Math.min(24, edgeStrength * 0.35);
+
+        brightness += brightness > 128
+            ? edgeBoost
+            : -edgeBoost;
+    }
+
+    brightness = clamp(brightness, 0, 255);
+
+    brightness = clamp(
+        (brightness - 128) * contrast + 128,
+        0,
+        255
+    );
+
+    let darkness = 1 - Math.pow(brightness / 255, 0.82);
+
+    if (darkInput.checked) {
+        darkness = 1 - darkness;
+    }
+
+    return {
+        darkness: clamp(darkness, 0, 1),
+        edgeStrength
+    };
+}
+
+function createCharacterGrid(pixels) {
+    const columns = Number(detailInput.value);
+    const fontSize = Number(fontInput.value);
+    const contrast = Number(contrastInput.value);
+
+    const characters = CHARACTER_SETS[styleInput.value];
+    const nameCharacters = nameInput.value.trim().replace(/\\s+/g, "");
+
+    const cellWidth = W / columns;
+    const cellHeight = fontSize * 1.42;
+
+    const rows = Math.floor(H / cellHeight);
+    const actualCellHeight = H / rows;
+
+    const grid = [];
+    let nameIndex = 0;
+
+    for (let row = 0; row < rows; row++) {
+        const rowData = [];
+        const y = (row + 0.5) * actualCellHeight;
+
+        for (let column = 0; column < columns; column++) {
+            const x = (column + 0.5) * cellWidth;
+
+            const result = analyzePixel(
+                pixels,
+                x,
+                y,
+                contrast
+            );
+
+            const darkness = result.darkness;
+
+            const characterIndex = Math.round(
+                darkness * (characters.length - 1)
+            );
+
+            // Use the entered name as the character texture.
+            // Brightness still controls the shade, preserving facial detail.
+            const character = nameCharacters[
+                nameIndex % nameCharacters.length
+            ];
+            nameIndex++;
+
+            let shade;
+
+            if (darkInput.checked) {
+                shade = Math.round(20 + darkness * 225);
+            } else {
+                shade = Math.round(250 - darkness * 235);
+            }
+
+            rowData.push({
+                character,
+                shade,
+                darkness,
+                edgeStrength: result.edgeStrength,
+                x: (column + 0.5) * cellWidth,
+                y: (row + 0.5) * actualCellHeight
+            });
+        }
+
+        grid.push(rowData);
+    }
+
+    return {
+        grid,
+        rows,
+        columns,
+        fontSize,
+        cellWidth,
+        darkBackground: darkInput.checked
+    };
+}
+
+function drawRow(data, rowIndex) {
+    const row = data.grid[rowIndex];
+
+    for (const cell of row) {
+        let shade = cell.shade;
+
+        // Fine alternating lines reproduce the reference texture.
+        if (scanInput.checked && rowIndex % 2 === 1) {
+            shade = data.darkBackground
+                ? Math.max(0, shade - 9)
+                : Math.min(255, shade + 10);
+        }
+
+        ctx.fillStyle = `rgb(${shade},${shade},${shade})`;
+
+        const useBold =
+            cell.darkness > 0.68 ||
+            (
+                edgeInput.checked &&
+                cell.edgeStrength > 35 &&
+                cell.darkness > 0.35
+            );
+
+        ctx.font =
+            `${useBold ? "bold " : ""}${data.fontSize}px monospace`;
+
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        ctx.fillText(
+            cell.character,
+            cell.x,
+            cell.y,
+            data.cellWidth * 1.15
+        );
+    }
+}
+
+function generatePortrait() {
+    if (!photo) {
+        message("Upload a photograph first.");
+        return;
+    }
+
+    const enteredName = nameInput.value.trim().replace(/\\s+/g, "");
+    if (!enteredName) {
+        message("Please enter your name before generating the portrait.");
+        nameInput.focus();
+        return;
+    }
+
+    if (!consentInput.checked) {
+        message("Please confirm consent before generating.");
+        return;
+    }
+
+    stopAnimation();
+
+    const myGeneration = generationId;
+
+    running = true;
+    completed = false;
+
+    generateButton.disabled = true;
+    downloadButton.disabled = true;
+    stopButton.disabled = false;
+
+    bar.style.width = "0%";
+
+    message("Analyzing facial details...");
+
+    setTimeout(() => {
+        if (myGeneration !== generationId) return;
+
+        try {
+            const pixels = preparePhoto(photo);
+            const data = createCharacterGrid(pixels);
+
+            if (myGeneration !== generationId) return;
+
+            clearCanvas();
+
+            let currentRow = 0;
+            const rowsPerFrame = Number(speedInput.value);
+
+            message("Your portrait is drawing...");
+
+            function animate() {
+                if (myGeneration !== generationId) return;
+
+                const endRow = Math.min(
+                    currentRow + rowsPerFrame,
+                    data.rows
+                );
+
+                while (currentRow < endRow) {
+                    drawRow(data, currentRow);
+                    currentRow++;
+                }
+
+                bar.style.width =
+                    Math.round(currentRow / data.rows * 100) + "%";
+
+                if (currentRow < data.rows) {
+                    animationFrame = requestAnimationFrame(animate);
+                } else {
+                    animationFrame = null;
+                    running = false;
+                    completed = true;
+
+                    generateButton.disabled = false;
+                    stopButton.disabled = true;
+                    downloadButton.disabled = false;
+
+                    message(`Portrait complete! ${data.columns} columns rendered. Uploading...`);
+                    window.uploadPortraitToBackend({
+                        customerName: nameInput.value.trim(),
+                        style: "high-detail-ascii",
+                        settings: {
+                            detail: Number(detailInput.value),
+                            contrast: Number(contrastInput.value),
+                            fontSize: Number(fontInput.value),
+                            texture: styleInput.value,
+                            animationSpeed: Number(speedInput.value),
+                            scanlines: scanInput.checked,
+                            edgeEnhancement: edgeInput.checked,
+                            darkBackground: darkInput.checked
+                        },
+                        originalFile: originalPhotoFile,
+                        canvas,
+                        statusElement: status
+                    }).catch(error => {
+                        console.error("Portrait upload failed:", error);
+                        message("Portrait generated, but saving failed: " + error.message);
+                    });
+                }
+            }
+
+            animationFrame = requestAnimationFrame(animate);
+
+        } catch (error) {
+            console.error(error);
+
+            running = false;
+            generateButton.disabled = false;
+            stopButton.disabled = true;
+
+            message(
+                "Generation failed. Try reducing the detail setting."
+            );
+        }
+    }, 40);
+}
+
+generateButton.addEventListener("click", generatePortrait);
+
+stopButton.addEventListener("click", () => {
+    if (!running) return;
+
+    stopAnimation();
+
+    completed = false;
+    downloadButton.disabled = true;
+
+    message("Animation stopped. Generate again to finish.");
+});
+
+nameInput.addEventListener("input", () => {
+    generationId++;
+    stopAnimation();
+    completed = false;
+    downloadButton.disabled = true;
+    if (nameInput.value.trim()) {
+        message("Name changed. Generate the portrait again.");
+    }
+});
+
+downloadButton.addEventListener("click", () => {
+    if (!completed) return;
+
+    const link = document.createElement("a");
+
+    const safeName = nameInput.value.trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "portrait";
+    link.download = safeName + "-high-detail-portrait.png";
+    link.href = canvas.toDataURL("image/png");
+
+    link.click();
+});
+
+[
+    detailInput,
+    contrastInput,
+    fontInput,
+    styleInput,
+    scanInput,
+    edgeInput,
+    darkInput
+].forEach(control => {
+    control.addEventListener("change", () => {
+        if (running) {
+            stopAnimation();
+        }
+
+        completed = false;
+        downloadButton.disabled = true;
+    });
+});
+
+updateLabels();
+
+</script>
+<script>
+/* Initialize each generator once its panel is first selected.
+   Scripts are isolated in functions so their const/let declarations do not collide. */
+(function() {
+  const initialized = new Set();
+  function init(id) {
+    if (initialized.has(id)) return;
+    const source = document.getElementById(id).textContent;
+    const run = new Function(source);
+    run();
+    initialized.add(id);
+  }
+  init("name-generator-script");
+  document.querySelector('[data-target="ascii-mode"]').addEventListener("click", () => init("ascii-generator-script"));
+})();
+</script>
+</body>
+</html>

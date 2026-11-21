@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portrait Studio Admin Dashboard</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <main class="admin-container">
+
+        <header class="admin-header">
+            <div>
+                <h1>Portrait Studio</h1>
+                <p>Admin Dashboard — Manage customer portraits</p>
+            </div>
+
+            <button id="refresh">↻ Refresh Records</button>
+        </header>
+
+        <section class="records-section">
+            <h2>Customer Portraits</h2>
+            <p id="status">Loading records...</p>
+
+            <div id="records"></div>
+        </section>
+
+    </main>
+    <script src="../frontend/config.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>

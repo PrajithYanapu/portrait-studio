@@ -1,0 +1,747 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>High Detail ASCII Portrait</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 22px;
+    background: #0b0d12;
+    color: #f4f6fb;
+    font-family: Arial, sans-serif;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+}
+
+.subtitle {
+    text-align: center;
+    color: #aab2c3;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.panel {
+    background: #171b25;
+    border: 1px solid #292f3c;
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin: 16px 0 8px;
+    font-weight: bold;
+}
+
+input[type="file"],
+select {
+    width: 100%;
+    padding: 12px;
+    background: #0d1119;
+    color: white;
+    border: 1px solid #343c4d;
+    border-radius: 8px;
+}
+
+input[type="range"] {
+    width: 100%;
+}
+
+.value {
+    color: #b9a4ff;
+}
+
+button {
+    padding: 13px 18px;
+    margin: 12px 6px 0 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.primary {
+    background: #8b5cf6;
+    color: white;
+}
+
+.secondary {
+    background: #303949;
+    color: white;
+}
+
+button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.check {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    line-height: 1.5;
+}
+
+.check label {
+    margin: 0;
+    font-weight: normal;
+}
+
+.status,
+.note {
+    color: #bfc6d6;
+    line-height: 1.6;
+}
+
+.note {
+    font-size: 13px;
+}
+
+.progress {
+    height: 7px;
+    background: #303747;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: 14px 0;
+}
+
+.bar {
+    height: 100%;
+    width: 0;
+    background: #a78bfa;
+}
+
+.preview {
+    text-align: center;
+}
+
+.canvas-wrap {
+    overflow: auto;
+    background: #080a0e;
+    border-radius: 8px;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    max-width: 760px;
+    height: auto;
+    margin: auto;
+    background: white;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 12px;
+    }
+
+    .panel {
+        padding: 15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>✦ High Detail ASCII Portrait ✦</h1>
+
+<p class="subtitle">
+Transform your photograph into a realistic character portrait
+with detailed facial shading and animated rendering.
+</p>
+
+<section class="panel">
+
+<label for="photo">Upload photograph</label>
+<input id="photo" type="file"
+       accept="image/jpeg,image/png,image/webp">
+
+<label for="detail">
+Portrait detail:
+<span class="value" id="detailValue">420 columns</span>
+</label>
+
+<input id="detail" type="range"
+       min="180" max="600" step="20" value="420">
+
+<label for="contrast">
+Contrast:
+<span class="value" id="contrastValue">1.7</span>
+</label>
+
+<input id="contrast" type="range"
+       min="0.8" max="2.8" step="0.1" value="1.7">
+
+<label for="fontSize">Character size</label>
+<select id="fontSize">
+    <option value="4">Extra small</option>
+    <option value="5" selected>Small — recommended</option>
+    <option value="6">Medium small</option>
+    <option value="8">Medium</option>
+</select>
+
+<label for="style">Character texture</label>
+<select id="style">
+    <option value="dense">Dense ASCII shading</option>
+    <option value="classic">Classic ASCII</option>
+    <option value="blocks">Block shading</option>
+</select>
+
+<label for="speed">Animation speed</label>
+<select id="speed">
+    <option value="1">Slow</option>
+    <option value="3" selected>Fast</option>
+    <option value="8">Very fast</option>
+</select>
+
+<div class="check">
+    <input id="scanlines" type="checkbox" checked>
+    <label for="scanlines">Fine horizontal scan-line texture</label>
+</div>
+
+<div class="check">
+    <input id="edge" type="checkbox" checked>
+    <label for="edge">Enhance facial edges and contrast</label>
+</div>
+
+<div class="check">
+    <input id="darkBg" type="checkbox">
+    <label for="darkBg">Dark background with light characters</label>
+</div>
+
+<div class="check">
+    <input id="consent" type="checkbox">
+    <label for="consent">
+        I consent to processing my photograph locally in this browser.
+    </label>
+</div>
+
+<p class="note">
+Your photo is processed locally and is not uploaded to a server.
+Use a clear, well-lit photograph for the best results.
+</p>
+
+<button class="primary" id="generate">
+Generate Animated Portrait
+</button>
+
+<button class="secondary" id="download" disabled>
+Download PNG
+</button>
+
+<button class="secondary" id="stop" disabled>
+Stop Animation
+</button>
+
+</section>
+
+<section class="panel preview">
+
+<h2>Your Portrait</h2>
+
+<p class="status" id="status">
+Upload a photograph to begin.
+</p>
+
+<div class="progress">
+    <div class="bar" id="bar"></div>
+</div>
+
+<div class="canvas-wrap">
+    <canvas id="result" width="1800" height="2200"></canvas>
+</div>
+
+<p class="note">
+Use higher detail settings for finer character patterns.
+The animation draws the portrait row by row.
+</p>
+
+</section>
+</div>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+
+const photoInput = $("photo");
+const detailInput = $("detail");
+const contrastInput = $("contrast");
+const fontInput = $("fontSize");
+const styleInput = $("style");
+const speedInput = $("speed");
+const scanInput = $("scanlines");
+const edgeInput = $("edge");
+const darkInput = $("darkBg");
+const consentInput = $("consent");
+
+const canvas = $("result");
+const ctx = canvas.getContext("2d", { alpha: false });
+
+const status = $("status");
+const bar = $("bar");
+
+const generateButton = $("generate");
+const downloadButton = $("download");
+const stopButton = $("stop");
+
+const W = 1800;
+const H = 2200;
+
+const CHARACTER_SETS = {
+    dense: " .'`^\",:;Il!i><~+_-?][}{1)(|/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$",
+    classic: " .,:;!|+*#%@",
+    blocks: " ░▒▓█"
+};
+
+let photo = null;
+let animationFrame = null;
+let generationId = 0;
+let completed = false;
+let running = false;
+
+function updateLabels() {
+    $("detailValue").textContent =
+        detailInput.value + " columns";
+
+    $("contrastValue").textContent =
+        Number(contrastInput.value).toFixed(1);
+}
+
+detailInput.addEventListener("input", updateLabels);
+contrastInput.addEventListener("input", updateLabels);
+
+function message(text) {
+    status.textContent = text;
+}
+
+function clearCanvas() {
+    ctx.fillStyle = darkInput.checked ? "#080808" : "#ffffff";
+    ctx.fillRect(0, 0, W, H);
+}
+
+clearCanvas();
+
+function stopAnimation(invalidate = true) {
+    if (invalidate) generationId++;
+
+    if (animationFrame !== null) {
+        cancelAnimationFrame(animationFrame);
+    }
+
+    animationFrame = null;
+    running = false;
+
+    generateButton.disabled = false;
+    stopButton.disabled = true;
+}
+
+photoInput.addEventListener("change", () => {
+    stopAnimation();
+
+    photo = null;
+    completed = false;
+    downloadButton.disabled = true;
+    bar.style.width = "0%";
+
+    const file = photoInput.files?.[0];
+
+    if (!file) {
+        message("Choose a photograph to start.");
+        return;
+    }
+
+    if (!file.type.startsWith("image/")) {
+        message("Please choose a valid image.");
+        return;
+    }
+
+    if (file.size > 20 * 1024 * 1024) {
+        message("Please choose an image smaller than 20 MB.");
+        return;
+    }
+
+    const url = URL.createObjectURL(file);
+    const image = new Image();
+
+    image.onload = () => {
+        URL.revokeObjectURL(url);
+        photo = image;
+        message("Photo loaded. Accept consent and generate.");
+    };
+
+    image.onerror = () => {
+        URL.revokeObjectURL(url);
+        message("Could not load the photo. Try a JPG or PNG.");
+    };
+
+    image.src = url;
+});
+
+function preparePhoto(image) {
+    const sampleCanvas = document.createElement("canvas");
+
+    sampleCanvas.width = W;
+    sampleCanvas.height = H;
+
+    const sampleCtx = sampleCanvas.getContext("2d", {
+        willReadFrequently: true
+    });
+
+    sampleCtx.fillStyle = "#ffffff";
+    sampleCtx.fillRect(0, 0, W, H);
+
+    // Crop to portrait dimensions without stretching.
+    const targetRatio = W / H;
+    const imageRatio = image.naturalWidth / image.naturalHeight;
+
+    let sx = 0;
+    let sy = 0;
+    let sw = image.naturalWidth;
+    let sh = image.naturalHeight;
+
+    if (imageRatio > targetRatio) {
+        sw = image.naturalHeight * targetRatio;
+        sx = (image.naturalWidth - sw) / 2;
+    } else {
+        sh = image.naturalWidth / targetRatio;
+        sy = (image.naturalHeight - sh) / 2;
+    }
+
+    sampleCtx.drawImage(
+        image,
+        sx, sy, sw, sh,
+        0, 0, W, H
+    );
+
+    return sampleCtx.getImageData(0, 0, W, H).data;
+}
+
+function luminanceAt(pixels, x, y) {
+    x = Math.max(0, Math.min(W - 1, Math.round(x)));
+    y = Math.max(0, Math.min(H - 1, Math.round(y)));
+
+    const i = (y * W + x) * 4;
+
+    return (
+        0.2126 * pixels[i] +
+        0.7152 * pixels[i + 1] +
+        0.0722 * pixels[i + 2]
+    );
+}
+
+function clamp(value, min, max) {
+    return Math.max(min, Math.min(max, value));
+}
+
+function analyzePixel(pixels, x, y, contrast) {
+    // Average a small neighborhood without blurring the face excessively.
+    const center = luminanceAt(pixels, x, y);
+    const left = luminanceAt(pixels, x - 2, y);
+    const right = luminanceAt(pixels, x + 2, y);
+    const up = luminanceAt(pixels, x, y - 2);
+    const down = luminanceAt(pixels, x, y + 2);
+
+    let brightness = (
+        center * 4 + left + right + up + down
+    ) / 8;
+
+    // Edge strength helps preserve glasses, eyelids, lips and hair edges.
+    const edgeStrength = (
+        Math.abs(left - right) +
+        Math.abs(up - down)
+    ) / 2;
+
+    if (edgeInput.checked) {
+        const edgeBoost = Math.min(24, edgeStrength * 0.35);
+
+        brightness += brightness > 128
+            ? edgeBoost
+            : -edgeBoost;
+    }
+
+    brightness = clamp(brightness, 0, 255);
+
+    brightness = clamp(
+        (brightness - 128) * contrast + 128,
+        0,
+        255
+    );
+
+    let darkness = 1 - Math.pow(brightness / 255, 0.82);
+
+    if (darkInput.checked) {
+        darkness = 1 - darkness;
+    }
+
+    return {
+        darkness: clamp(darkness, 0, 1),
+        edgeStrength
+    };
+}
+
+function createCharacterGrid(pixels) {
+    const columns = Number(detailInput.value);
+    const fontSize = Number(fontInput.value);
+    const contrast = Number(contrastInput.value);
+
+    const characters = CHARACTER_SETS[styleInput.value];
+
+    const cellWidth = W / columns;
+    const cellHeight = fontSize * 1.42;
+
+    const rows = Math.floor(H / cellHeight);
+    const actualCellHeight = H / rows;
+
+    const grid = [];
+
+    for (let row = 0; row < rows; row++) {
+        const rowData = [];
+        const y = (row + 0.5) * actualCellHeight;
+
+        for (let column = 0; column < columns; column++) {
+            const x = (column + 0.5) * cellWidth;
+
+            const result = analyzePixel(
+                pixels,
+                x,
+                y,
+                contrast
+            );
+
+            const darkness = result.darkness;
+
+            const characterIndex = Math.round(
+                darkness * (characters.length - 1)
+            );
+
+            const character = characters[characterIndex];
+
+            let shade;
+
+            if (darkInput.checked) {
+                shade = Math.round(20 + darkness * 225);
+            } else {
+                shade = Math.round(250 - darkness * 235);
+            }
+
+            rowData.push({
+                character,
+                shade,
+                darkness,
+                edgeStrength: result.edgeStrength,
+                x: (column + 0.5) * cellWidth,
+                y: (row + 0.5) * actualCellHeight
+            });
+        }
+
+        grid.push(rowData);
+    }
+
+    return {
+        grid,
+        rows,
+        columns,
+        fontSize,
+        cellWidth,
+        darkBackground: darkInput.checked
+    };
+}
+
+function drawRow(data, rowIndex) {
+    const row = data.grid[rowIndex];
+
+    for (const cell of row) {
+        let shade = cell.shade;
+
+        // Fine alternating lines reproduce the reference texture.
+        if (scanInput.checked && rowIndex % 2 === 1) {
+            shade = data.darkBackground
+                ? Math.max(0, shade - 9)
+                : Math.min(255, shade + 10);
+        }
+
+        ctx.fillStyle = `rgb(${shade},${shade},${shade})`;
+
+        const useBold =
+            cell.darkness > 0.68 ||
+            (
+                edgeInput.checked &&
+                cell.edgeStrength > 35 &&
+                cell.darkness > 0.35
+            );
+
+        ctx.font =
+            `${useBold ? "bold " : ""}${data.fontSize}px monospace`;
+
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        ctx.fillText(
+            cell.character,
+            cell.x,
+            cell.y,
+            data.cellWidth * 1.15
+        );
+    }
+}
+
+function generatePortrait() {
+    if (!photo) {
+        message("Upload a photograph first.");
+        return;
+    }
+
+    if (!consentInput.checked) {
+        message("Please confirm consent before generating.");
+        return;
+    }
+
+    stopAnimation();
+
+    const myGeneration = generationId;
+
+    running = true;
+    completed = false;
+
+    generateButton.disabled = true;
+    downloadButton.disabled = true;
+    stopButton.disabled = false;
+
+    bar.style.width = "0%";
+
+    message("Analyzing facial details...");
+
+    setTimeout(() => {
+        if (myGeneration !== generationId) return;
+
+        try {
+            const pixels = preparePhoto(photo);
+            const data = createCharacterGrid(pixels);
+
+            if (myGeneration !== generationId) return;
+
+            clearCanvas();
+
+            let currentRow = 0;
+            const rowsPerFrame = Number(speedInput.value);
+
+            message("Your portrait is drawing...");
+
+            function animate() {
+                if (myGeneration !== generationId) return;
+
+                const endRow = Math.min(
+                    currentRow + rowsPerFrame,
+                    data.rows
+                );
+
+                while (currentRow < endRow) {
+                    drawRow(data, currentRow);
+                    currentRow++;
+                }
+
+                bar.style.width =
+                    Math.round(currentRow / data.rows * 100) + "%";
+
+                if (currentRow < data.rows) {
+                    animationFrame = requestAnimationFrame(animate);
+                } else {
+                    animationFrame = null;
+                    running = false;
+                    completed = true;
+
+                    generateButton.disabled = false;
+                    stopButton.disabled = true;
+                    downloadButton.disabled = false;
+
+                    message(
+                        `Portrait complete! ${data.columns} columns rendered.`
+                    );
+                }
+            }
+
+            animationFrame = requestAnimationFrame(animate);
+
+        } catch (error) {
+            console.error(error);
+
+            running = false;
+            generateButton.disabled = false;
+            stopButton.disabled = true;
+
+            message(
+                "Generation failed. Try reducing the detail setting."
+            );
+        }
+    }, 40);
+}
+
+generateButton.addEventListener("click", generatePortrait);
+
+stopButton.addEventListener("click", () => {
+    if (!running) return;
+
+    stopAnimation();
+
+    completed = false;
+    downloadButton.disabled = true;
+
+    message("Animation stopped. Generate again to finish.");
+});
+
+downloadButton.addEventListener("click", () => {
+    if (!completed) return;
+
+    const link = document.createElement("a");
+
+    link.download = "high-detail-ascii-portrait.png";
+    link.href = canvas.toDataURL("image/png");
+
+    link.click();
+});
+
+[
+    detailInput,
+    contrastInput,
+    fontInput,
+    styleInput,
+    scanInput,
+    edgeInput,
+    darkInput
+].forEach(control => {
+    control.addEventListener("change", () => {
+        if (running) {
+            stopAnimation();
+        }
+
+        completed = false;
+        downloadButton.disabled = true;
+    });
+});
+
+updateLabels();
+
+</script>
+</body>
+</html>
