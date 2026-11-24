@@ -27,3 +27,6 @@ node_modules/
 # Local databases
 *.db
 *.sqlite3
+
+# Local Netlify folder
+.netlify

@@ -1,0 +1,17 @@
+[build]
+  # Static site, no build step. The repository root is published so that both
+  # /frontend and /admin are deployed (admin loads ../frontend/config.js).
+  publish = "."
+
+# Serve the landing page at the site root. These are non-forced rewrites, so any
+# file that actually exists (e.g. /admin/, /frontend/config.js) is still served
+# directly; everything else falls through to the frontend folder.
+[[redirects]]
+  from = "/"
+  to = "/frontend/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/frontend/:splat"
+  status = 200
